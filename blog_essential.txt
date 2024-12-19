@@ -1,0 +1,8 @@
+Title  = charfield (200)
+Slug = slug (200)
+Content = textbox()
+Category  = dropdown()
+Featured image = image 
+Index Status = True /False
+meta title  = charfield (200)
+meta description = charfield (250)
