@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block content %}
+<section>
+  <div class="container my-5">
+    <div class="card-group">
+      {% for blog in blogs %}
+      <div class="card">
+        <div class="card-body">
+          <a href="{% url 'blog-detail' blog.slug  %}">
+            <h5 class="card-title">{{blog.title}}</h5>
+          </a>
+
+          <p class="card-text">{{blog.content |truncatewords:15}}</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Updated: {{blog.modified_at}}</small>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
