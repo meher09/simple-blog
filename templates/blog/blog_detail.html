@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block seo_head %}
+<title>{{blog.title}}</title>
+
+{% endblock %} {% block content %}
 
 <section class="single-block-wrapper section-padding">
   <div class="container">
@@ -9,7 +12,7 @@
             <div class="meta-cat">
               <a
                 class="post-category font-extra text-color text-uppercase font-sm letter-spacing-1"
-                href="{% url 'category_detail' category.slug %}"
+                href="{% url 'category_detail' blog.category.slug %}"
                 >{{blog.category.name}}</a
               >
             </div>
@@ -104,18 +107,22 @@
         </div>
         <nav class="post-pagination clearfix border-top border-bottom py-4">
           <div class="prev-post">
-            <a href="blog-single.html">
+            {% if next_blog %}
+            <a href="{% url 'blog-detail' next_blog.slug %}">
               <span class="text-uppercase font-sm letter-spacing">Next</span>
-              <h4 class="mt-3">Intel’s new smart glasses actually look good</h4>
+              <h4 class="mt-3">{{next_blog.title}}</h4>
             </a>
+            {% endif %}
           </div>
           <div class="next-post">
-            <a href="blog-single.html">
+            {% if previous_blog %}
+            <a href="{% url 'blog-detail' previous_blog.slug %}">
               <span class="text-uppercase font-sm letter-spacing"
                 >Previous</span
               >
-              <h4 class="mt-3">Free Two-Hour Delivery From Whole Foods</h4>
+              <h4 class="mt-3">{{previous_blog.title}}</h4>
             </a>
+            {% endif %}
           </div>
         </nav>
         <div class="related-posts-block mt-5">
@@ -146,6 +153,7 @@
 
         <div class="comment-area my-5">
           <h3 class="mb-4 text-center">2 Comments</h3>
+          {% for comment in comments %}
           <div class="comment-area-box media">
             <img
               alt=""
@@ -154,48 +162,18 @@
             />
 
             <div class="media-body ml-4">
-              <h4 class="mb-0">Micle harison</h4>
+              <h4 class="mb-0">{{comment.name}}</h4>
               <span class="date-comm font-sm text-capitalize text-color"
-                ><i class="ti-time mr-2"></i>June 7, 2019
+                ><i class="ti-time mr-2"></i>
+                {{comment.created_at| date:"F j, Y"}}
               </span>
 
               <div class="comment-content mt-3">
-                <p>
-                  Lorem ipsum dolor sit amet, usu ut perfecto postulant
-                  deterruisset, libris causae volutpat at est, ius id modus
-                  laoreet urbanitas. Mel ei delenit dolores.
-                </p>
-              </div>
-              <div class="comment-meta mt-4 mt-lg-0 mt-md-0">
-                <a href="#" class="text-underline">Reply</a>
+                <p>{{comment.body}}</p>
               </div>
             </div>
           </div>
-
-          <div class="comment-area-box media mt-5">
-            <img
-              alt=""
-              src="{% static 'images/blog-user-3.jpg' %}"
-              class="mt-2 img-fluid float-left mr-3"
-            />
-
-            <div class="media-body ml-4">
-              <h4 class="mb-0">John Doe</h4>
-              <span class="date-comm font-sm text-capitalize text-color"
-                ><i class="ti-time mr-2"></i>June 7, 2019
-              </span>
-
-              <div class="comment-content mt-3">
-                <p>
-                  Some consultants are employed indirectly by the client via a
-                  consultancy staffing company.
-                </p>
-              </div>
-              <div class="comment-meta mt-4 mt-lg-0 mt-md-0">
-                <a href="#" class="text-underline">Reply</a>
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
 
         <form class="comment-form mb-5 gray-bg p-5" id="comment-form">
@@ -282,84 +260,53 @@
             <div class="sidebar-widget mb-5">
               <h4 class="text-center widget-title">Trending Posts</h4>
 
+              {% for top_blog in top_viewed_blogs %} {% if forloop.first %}
               <div class="sidebar-post-item-big">
                 <a href="blog-single.html"
                   ><img
-                    src="{% static 'images/news/img-1.jpg' %}"
+                    src="{{top_blog.featured_image.url}}"
                     alt=""
                     class="img-fluid"
                 /></a>
                 <div class="mt-3 media-body">
                   <span class="text-muted letter-spacing text-uppercase font-sm"
-                    >September 10, 2019</span
+                    >{{top_blog.modified_at| date:"F j, Y"}}</span
                   >
                   <h4>
-                    <a href="blog-single.html"
-                      >Meeting With Clarissa, Founder Of Purple Conversation
-                      App</a
-                    >
+                    <a href="blog-single.html">{{top_blog.title }}</a>
                   </h4>
                 </div>
               </div>
+              {% else %}
 
               <div class="media border-bottom py-3 sidebar-post-item">
                 <a href="#"
                   ><img
                     class="mr-4"
-                    src="{% static 'images/news/thumb-1.jpg' %}"
+                    src="{{top_blog.featured_image.url}}"
                     alt=""
                 /></a>
                 <div class="media-body">
                   <span class="text-muted letter-spacing text-uppercase font-sm"
-                    >September 10, 2019</span
+                    >{{top_blog.modified_at| date:"F j, Y"}}</span
                   >
                   <h4>
-                    <a href="blog-single.html"
-                      >Thoughtful living in los Angeles</a
-                    >
+                    <a href="blog-single.html">{{top_blog.title}}</a>
                   </h4>
                 </div>
               </div>
-
-              <div class="media py-3 sidebar-post-item">
-                <a href="#"
-                  ><img
-                    class="mr-4"
-                    src="{% static 'images/news/thumb-2.jpg' %}"
-                    alt=""
-                /></a>
-                <div class="media-body">
-                  <span class="text-muted letter-spacing text-uppercase font-sm"
-                    >September 10, 2019</span
-                  >
-                  <h4>
-                    <a href="blog-single.html"
-                      >Vivamus molestie gravida turpis.</a
-                    >
-                  </h4>
-                </div>
-              </div>
+              {% endif %} {% endfor %}
             </div>
 
             <div class="sidebar-widget category mb-5">
               <h4 class="text-center widget-title">Catgeories</h4>
               <ul class="list-unstyled">
+                {% for cats in categories %}
                 <li class="align-items-center d-flex justify-content-between">
-                  <a href="#">Innovation</a>
-                  <span>14</span>
+                  <a href="#">{{cats.name}}</a>
+                  <span>{{cats.post_count}}</span>
                 </li>
-                <li class="align-items-center d-flex justify-content-between">
-                  <a href="#">Software</a>
-                  <span>2</span>
-                </li>
-                <li class="align-items-center d-flex justify-content-between">
-                  <a href="#">Social</a>
-                  <span>10</span>
-                </li>
-                <li class="align-items-center d-flex justify-content-between">
-                  <a href="#">Trends</a>
-                  <span>5</span>
-                </li>
+                {% endfor %}
               </ul>
             </div>
 
